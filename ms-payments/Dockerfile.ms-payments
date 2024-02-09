@@ -1,0 +1,8 @@
+FROM node:20-slim
+RUN apt-get update -y && apt-get install -y openssl
+WORKDIR /app
+COPY ./ms-payments/package.json .
+RUN npm install
+COPY ms-payments/ .
+EXPOSE 3020
+CMD ["npm", "start"]
