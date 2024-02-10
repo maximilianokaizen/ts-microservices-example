@@ -39,9 +39,24 @@ services:
       dockerfile: ./ms-users/Dockerfile.ms-users
     ports:
       - "3000:3000"
-    depends_on:
-      - mysql-users
-      - mysql-payments
+    networks:
+      - my-network
+
+  ms-numbers-of-users:
+    build:
+      context: .
+      dockerfile: ./ms-number-of-users/Dockerfile.ms-number-of-users
+    ports:
+      - "3010:3010"
+    networks:
+      - my-network
+
+  ms-payments:
+    build:
+      context: .
+      dockerfile: ./ms-payments/Dockerfile.ms-payments
+    ports:
+      - "3020:3020"
     networks:
       - my-network
 

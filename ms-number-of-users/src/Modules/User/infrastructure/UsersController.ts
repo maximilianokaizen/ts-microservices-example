@@ -15,5 +15,4 @@ export class UsersController {
     this.userService = new UsersService();
     this.logger = new WinstonLogger();
   }
-
 }

@@ -33,7 +33,7 @@ export class Server {
       res.status(httpStatus.INTERNAL_SERVER_ERROR).send(err.message);
     });
     kafkaConsumerService.start().catch(console.error);
-  } 
+  }
 
   async listen(): Promise<void> {
     return new Promise(resolve => {

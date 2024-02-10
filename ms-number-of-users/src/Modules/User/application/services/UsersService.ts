@@ -1,4 +1,3 @@
-
 import { InternalResponse } from '../../../Shared/dto/InternalResponse';
 import { UserInterface } from '../../model/interfaces/UserInterface';
 import { UserRepository } from '../../model/repositories/UserRepository';
@@ -15,7 +14,7 @@ export class UsersService {
     this.logger = new WinstonLogger();
   }
 
-  async addNewUser(){
+  async addNewUser() {
     try {
       return await this.userRepository.addNewUser();
     } catch (error) {

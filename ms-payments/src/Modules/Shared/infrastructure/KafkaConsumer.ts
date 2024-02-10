@@ -8,11 +8,11 @@ dotenv.config();
 class KafkaConsumerService {
   private consumer: Consumer;
   private logger: Logger;
-  private userService : UsersService;
+  private userService: UsersService;
   constructor() {
     const kafka = new Kafka({
       clientId: 'default-client',
-      brokers: ['localhost:9092'],
+      brokers: ['localhost:9092']
     });
     this.logger = new WinstonLogger();
     this.consumer = kafka.consumer({ groupId: 'group-default' });
@@ -20,33 +20,26 @@ class KafkaConsumerService {
   }
 
   public async start(): Promise<void> {
-    
     await this.consumer.connect();
-    await this.consumer.subscribe({ topic: 'user.created', fromBeginning: true });
+    await this.consumer.subscribe({ topic: 'newuser', fromBeginning: true });
 
     await this.consumer.run({
       eachMessage: async ({ topic, partition, message }) => {
         if (message.value) {
-        let eventPayload : any;
-        eventPayload = JSON.parse(message.value.toString());
-        console.log('===============================================');
-        console.log('PAYMENT');
-        console.log('===============================================');
-        console.log('eventPayload =>', eventPayload);
-        if (eventPayload.topic  === 'user.created.amount'){
+          let eventPayload: any;
+          eventPayload = JSON.parse(message.value.toString());
+          console.log(' eventPayload =>',  eventPayload);
           try {
-            console.log('es =>', eventPayload.message.data.amount)
             this.userService.addUserPayment(eventPayload.message.data.amount);
           } catch (error) {
             this.logger.error(`Error adding new user ${error}`);
           }
         }
-          try {
-          } catch (error) {
-            this.logger.error(`Error processing message: ${error}`);
-          }
+        try {
+        } catch (error) {
+          this.logger.error(`Error processing message: ${error}`);
         }
-      },
+      }
     });
   }
 }

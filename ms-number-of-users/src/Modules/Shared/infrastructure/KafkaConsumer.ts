@@ -8,44 +8,44 @@ dotenv.config();
 class KafkaConsumerService {
   private consumer: Consumer;
   private logger: Logger;
-  private userService : UsersService;
+  private userService: UsersService;
   constructor() {
     const kafka = new Kafka({
       clientId: 'default-client',
-      brokers: ['localhost:9092'],
+      brokers: ['localhost:9092']
     });
     this.logger = new WinstonLogger();
-    this.consumer = kafka.consumer({ groupId: 'group-default' });
+    this.consumer = kafka.consumer({ groupId: 'group-default-2' });
     this.userService = new UsersService();
   }
 
   public async start(): Promise<void> {
-    
-    await this.consumer.connect();
-    await this.consumer.subscribe({ topic: 'user.created', fromBeginning: true });
 
+    try {
+      await this.consumer.connect();
+      await this.consumer.subscribe({ topic: 'newuser', fromBeginning: true });
+      console.log('Connected and subscribed successfully');
+    } catch (error) {
+      console.error('Error connecting or subscribing:', error);
+      return; 
+    }
     await this.consumer.run({
       eachMessage: async ({ topic, partition, message }) => {
         if (message.value) {
-        let eventPayload : any;
-        eventPayload = JSON.parse(message.value.toString());
-        console.log('===============================================');
-        console.log('NUMBERS OF USERS');
-        console.log('===============================================');
-        console.log('message =>', eventPayload);
-        if (eventPayload.message.action === 'user.created'){
+          let eventPayload: any;
+          eventPayload = JSON.parse(message.value.toString());
+          console.log(' eventPayload =>',  eventPayload);
           try {
             this.userService.addNewUser();
           } catch (error) {
             this.logger.error(`Error adding new user ${error}`);
           }
         }
-          try {
-          } catch (error) {
-            this.logger.error(`Error processing message: ${error}`);
-          }
+        try {
+        } catch (error) {
+          this.logger.error(`Error processing message: ${error}`);
         }
-      },
+      }
     });
   }
 }

@@ -19,7 +19,7 @@ export class UserRepository {
     try {
       const { id, ...createData } = userData; // eslint-disable-line @typescript-eslint/no-unused-vars
       await this.prisma.user.create({ data: createData });
-      return { success: true, message: 'User created successfully', data : userData};
+      return { success: true, message: 'User created successfully', data: userData };
     } catch (error) {
       this.logger.error(error);
       return { success: false, message: 'Error creating user' };

@@ -23,7 +23,7 @@ const bcrypt = require('bcrypt');
 export class UsersController {
   private readonly userService: UsersService;
   private readonly logger: Logger;
-  private readonly kafkaProducer : KafkaProducer;
+  private readonly kafkaProducer: KafkaProducer;
   constructor() {
     this.userService = new UsersService();
     this.logger = new WinstonLogger();
@@ -56,15 +56,15 @@ export class UsersController {
       if (response.success) {
         try {
           // TODO : Create Domain Event
-          if (response.data.password) delete response.data.password; 
-          await this.kafkaProducer.sendToKafkaService({
-            action : 'user.created', 
-            data : response.data
-          }, 'user.created', 'group-default');
-          await this.kafkaProducer.sendToKafkaService({
-            action : 'user.created.amount', 
-            data : response.data
-          }, 'user.created', 'group-default');
+          if (response.data.password) delete response.data.password;
+          await this.kafkaProducer.sendToKafkaService(
+            {
+              action: 'user.created',
+              data: response.data
+            },
+            'newuser',
+            'group-default'
+          );
         } catch (error) {
           console.log('Error....');
           this.logger.error('Error sending kafka message in creating of user');
