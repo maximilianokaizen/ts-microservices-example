@@ -62,10 +62,11 @@ export class UsersController {
             data : response.data
           }, 'user.created', 'group-default');
           await this.kafkaProducer.sendToKafkaService({
-            action : 'user.created', 
+            action : 'user.created.amount', 
             data : response.data
-          }, 'user.created.amount', 'group-default');
+          }, 'user.created', 'group-default');
         } catch (error) {
+          console.log('Error....');
           this.logger.error('Error sending kafka message in creating of user');
         }
         res.status(HttpResponseCodes.CREATED).json(response);

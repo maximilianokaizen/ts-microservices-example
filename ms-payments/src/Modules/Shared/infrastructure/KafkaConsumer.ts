@@ -30,12 +30,13 @@ class KafkaConsumerService {
         let eventPayload : any;
         eventPayload = JSON.parse(message.value.toString());
         console.log('===============================================');
-        console.log('NUMBERS OF USERS');
+        console.log('PAYMENT');
         console.log('===============================================');
-        console.log('message =>', eventPayload);
-        if (eventPayload.message.action === 'user.created'){
+        console.log('eventPayload =>', eventPayload);
+        if (eventPayload.topic  === 'user.created.amount'){
           try {
-            this.userService.addNewUser();
+            console.log('es =>', eventPayload.message.data.amount)
+            this.userService.addUserPayment(eventPayload.message.data.amount);
           } catch (error) {
             this.logger.error(`Error adding new user ${error}`);
           }
