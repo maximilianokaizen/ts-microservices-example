@@ -17,13 +17,10 @@ model User {
   user        String   @unique
   password    String
   active      Boolean  @default(true)
+  amount      Decimal  @default(0) 
   createdAt   DateTime @default(now())
   deletedAt   DateTime?
   modifiedAt  DateTime? @updatedAt
 
   @@map("users")
-}
-
-generator client {
-  provider = "prisma-client-js"
 }

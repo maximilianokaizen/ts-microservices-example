@@ -12,6 +12,7 @@ import WinstonLogger from '../../../Shared/infrastructure/WinstoneLogger';
 import Logger from '../../../Shared/domain/Logger';
 import { Constants } from '../../Shared/constants';
 import { CaseUseException } from '../../../Shared/domain/exceptions/CaseUseException';
+import { Amount } from '../../../Shared/domain/value-object/Amount';
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const bcrypt = require('bcrypt');
 
@@ -31,7 +32,8 @@ export class UsersService {
     userName: UserName,
     password: string,
     active: Active,
-    createdAt: CreatedAt
+    createdAt: CreatedAt,
+    amount: Amount
   ): Promise<InternalResponse> {
     try {
       const user: UserInterface = {
@@ -42,6 +44,7 @@ export class UsersService {
         user: userName.value,
         password,
         active: active.value,
+        amount: amount.getValue(),
         createdAt: createdAt.value
       };
       return await this.userRepository.create(user);

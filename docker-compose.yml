@@ -7,11 +7,15 @@ services:
     environment:
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=postgres
+    networks:
+      - my-network
 
   zookeeper:
     image: confluentinc/cp-zookeeper:5.5.3
     environment:
       ZOOKEEPER_CLIENT_PORT: 2181
+    networks:
+      - my-network
 
   kafka:
     image: confluentinc/cp-enterprise-kafka:5.5.3
@@ -26,5 +30,39 @@ services:
       KAFKA_JMX_PORT: 9991
     ports:
       - "9092:9092"
+    networks:
+      - my-network
+
+  ms-users:
+    build:
+      context: .
+      dockerfile: ./ms-users/Dockerfile.ms-users
+    ports:
+      - "3000:3000"
+    depends_on:
+      - postgres
+    networks:
+      - my-network
+
+  mongo-number-of-users:
+    image: mongo
+    ports:
+      - "27017:27017"
+    networks:
+      - my-network
+    volumes:
+      - ./data/mongo-number-of-users:/data/db
+
+  mongo-payments:
+    image: mongo
+    ports:
+      - "27018:27017"
+    networks:
+      - my-network
+    volumes:
+      - ./data/mongo-payments:/data/db
 
  
+      
+networks:
+  my-network:

@@ -7,6 +7,7 @@ export interface UserInterface {
   user: string;
   password: string;
   active: boolean;
+  amount: number | any;
   createdAt: Date | string;
   deletedAt?: Date | string | null;
   modifiedAt?: Date | string | null;

@@ -10,6 +10,7 @@ import cors from 'cors';
 import routes from './Routes/routes';
 //import swaggerUi from 'swagger-ui-express';
 //const swaggerOutput = require('./swagger_output.json'); // eslint-disable-line @typescript-eslint/no-var-requires
+import kafkaConsumerService from './Modules/Shared/infrastructure/KafkaConsumer';
 export class Server {
   private express: express.Express;
   readonly port: string;
@@ -31,6 +32,8 @@ export class Server {
       this.logger.error(err);
       res.status(httpStatus.INTERNAL_SERVER_ERROR).send(err.message);
     });
+    kafkaConsumerService.start().catch(console.error);
+    
   }
 
   async listen(): Promise<void> {

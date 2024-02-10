@@ -9,22 +9,26 @@ import { Active } from '../../Shared/domain/value-object/User/Active';
 import { Uuid } from '../../Shared/domain/value-object/Uuid';
 import { CreatedAt } from '../../Shared/domain/value-object/CreatedAt';
 import { Page } from '../../Shared/domain/value-object/Page';
+import { Amount } from '../../Shared/domain/value-object/Amount';
 import { HttpResponseCodes } from '../../Shared/HttpResponseCodes';
 import { UsersService } from '../application/services/UsersService';
 import Logger from '../../Shared/domain/Logger';
 import WinstonLogger from '../../Shared/infrastructure/WinstoneLogger';
 import { GeneralConstants } from '../../Shared/constants';
 import { ControllerError } from '../../Shared/domain/exceptions/ControllerException';
+import { KafkaProducer } from '../../Shared/infrastructure/KafkaProducer';
+import { User } from '@prisma/client';
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const bcrypt = require('bcrypt');
 
 export class UsersController {
   private readonly userService: UsersService;
   private readonly logger: Logger;
-
+  private readonly kafkaProducer : KafkaProducer;
   constructor() {
     this.userService = new UsersService();
     this.logger = new WinstonLogger();
+    this.kafkaProducer = new KafkaProducer();
   }
 
   async createUser(req: Request, res: Response) {
@@ -36,6 +40,7 @@ export class UsersController {
       const email = new Email(req.body.email);
       const password = new UserPassword(req.body.password);
       const active = new Active(req.body.active);
+      const amount = new Amount(req.body.amount);
       const createdAt = new CreatedAt(new Date());
       const hashedPassword = await bcrypt.hash(password.value, 10);
       const response = await this.userService.create(
@@ -46,9 +51,24 @@ export class UsersController {
         userName,
         hashedPassword,
         active,
-        createdAt
+        createdAt,
+        amount
       );
       if (response.success) {
+        try {
+          // TODO : Create Domain Event
+          if (response.data.password) delete response.data.password; 
+          this.kafkaProducer.sendToKafkaService({
+            message : 'user.created', 
+            data : response.data
+          }, 'user.created.count', 'group-default');
+          this.kafkaProducer.sendToKafkaService({
+            message : 'user.created', 
+            data : response.data
+          }, 'user.created.amount', 'group-default');
+        } catch (error) {
+          this.logger.error('Error sending kafka message in creating of user');
+        }
         res.status(HttpResponseCodes.CREATED).json(response);
       } else {
         throw new ControllerError('Error creating new user', HttpResponseCodes.BAD_REQUEST);

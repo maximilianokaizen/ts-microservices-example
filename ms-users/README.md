@@ -1,32 +1,4 @@
-# Mate ![icons8-mate-32](https://github.com/maximilianokaizen/mate/assets/148482605/c830d9f1-1ce1-4a54-82e4-706ae1a4d5f5)
-
-A Minimalist Boilerplate for Services/Microservices, Utilizing TypeScript, DDD, and Hexagonal Architecture.
-
-## Video (spanish)
-
-https://www.youtube.com/watch?v=xEcU1bHux6k&t=3s&ab_channel=MaximilianoRossi
-
-## Authors
-
-- [@maximilianokaizen](https://www.github.com/maximilianokaizen)
-
-## Features
-
-- DDD Based / Hexagonal Architecture
-- Object Values
-- Application / Domain / Infrastructure layers
-- Controllers, Services and Repositories
-- Test E2E (JEST)
-- Prettier for Code Style 
-- Eslint as linter
-- TS Configuration
-- Prisma as ORM
-- Swagger for API Documentation
-- Winston for logs
-- Nodemon
-- DockerFile and docker-compose
-- Postgress as relational DB 
-- Users module 
+# Ms-Usrs 
 
 ## Requirements
 
@@ -35,31 +7,21 @@ Docker
 Docker Composer
 Node LTS, >= 18, NPM
 ```
-
 ### Local Development Setup
 
-#### 1. Clone the Repository
-
-To get started, clone the repository to your local machine:
-
-```bash
-git clone https://github.com/maximilianokaizen/mate
-cd mate
-```
-
-#### 2. Install dependencies
+#### 1. Install dependencies
 
 ```bash
 npm i 
 ```
 
-#### 3. Build and Run the Services
+#### 2. Build and Run the Services
 
 ```bash
 docker-compose up --build -d
 ```
 
-#### 4. Create Database and run migrations
+#### 3. Create Database and run migrations
 
 ```bash
 npx prisma init
@@ -73,13 +35,13 @@ if all it's ok, you will in console this message.
 
 A new user was created. And is.. John Wick!
 
-#### 5. Run mate with 
+#### 4. Run mate with 
 
 ```bash
 npm run dev
 ```
 
-#### 6. Other commands
+#### 5. Other commands
 
 ```bash
 npm run build
@@ -93,15 +55,16 @@ npm run lint
 ## Create User CURL
 
 ```bash
-curl -X POST http://localhost:3030/v1/users -H "Content-Type: application/json" -d '{
+curl -X POST http://localhost:3000/v1/users -H "Content-Type: application/json" -d '{
 "uuid": "",
 "name": "John",
-"userName": "johndoe123",
+"userName": "johndoe12356",
 "lastName": "Doe",
-"email": "johndoe@example.com",
+"email": "johndoe4556@example.com",
 "password": "P@ssw0rd123",
 "active": true,
-"createdAt": "2022-01-30T12:00:00Z"
+"createdAt": "2022-01-30T12:00:00Z",
+"amount": 2500.00
 }'
 ```
 
