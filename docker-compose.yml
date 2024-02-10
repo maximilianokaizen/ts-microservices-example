@@ -40,29 +40,40 @@ services:
     ports:
       - "3000:3000"
     depends_on:
-      - postgres
+      - mysql-users
+      - mysql-payments
     networks:
       - my-network
 
-  mongo-number-of-users:
-    image: mongo
+  mysql-users:
+    image: mysql:8.0
+    environment:
+      MYSQL_ROOT_PASSWORD: rootpassword
+      MYSQL_DATABASE: usersdb
+      MYSQL_USER: user
+      MYSQL_PASSWORD: password
     ports:
-      - "27017:27017"
+      - "3310:3306"
+    command: ['--default-authentication-plugin=mysql_native_password']
+    volumes:
+      - ./data/mysql-users:/var/lib/mysql
     networks:
       - my-network
-    volumes:
-      - ./data/mongo-number-of-users:/data/db
 
-  mongo-payments:
-    image: mongo
+  mysql-payments:
+    image: mysql:8.0
+    environment:
+      MYSQL_ROOT_PASSWORD: rootpassword
+      MYSQL_DATABASE: paymentsdb
+      MYSQL_USER: user
+      MYSQL_PASSWORD: password
     ports:
-      - "27018:27017"
+      - "3320:3306"
+    command: ['--default-authentication-plugin=mysql_native_password']
+    volumes:
+      - ./data/mysql-payments:/var/lib/mysql
     networks:
       - my-network
-    volumes:
-      - ./data/mongo-payments:/data/db
 
- 
-      
 networks:
   my-network:

@@ -14,4 +14,13 @@ export class UsersService {
     this.userRepository = new UserRepository();
     this.logger = new WinstonLogger();
   }
+
+  async addNewUser(){
+    try {
+      return await this.userRepository.addNewUser();
+    } catch (error) {
+      this.logger.error(error);
+      throw new CaseUseException('Error creating user');
+    }
+  }
 }

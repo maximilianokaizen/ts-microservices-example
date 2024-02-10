@@ -17,7 +17,6 @@ import WinstonLogger from '../../Shared/infrastructure/WinstoneLogger';
 import { GeneralConstants } from '../../Shared/constants';
 import { ControllerError } from '../../Shared/domain/exceptions/ControllerException';
 import { KafkaProducer } from '../../Shared/infrastructure/KafkaProducer';
-import { User } from '@prisma/client';
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const bcrypt = require('bcrypt');
 
@@ -58,12 +57,12 @@ export class UsersController {
         try {
           // TODO : Create Domain Event
           if (response.data.password) delete response.data.password; 
-          this.kafkaProducer.sendToKafkaService({
-            message : 'user.created', 
+          await this.kafkaProducer.sendToKafkaService({
+            action : 'user.created', 
             data : response.data
-          }, 'user.created.count', 'group-default');
-          this.kafkaProducer.sendToKafkaService({
-            message : 'user.created', 
+          }, 'user.created', 'group-default');
+          await this.kafkaProducer.sendToKafkaService({
+            action : 'user.created', 
             data : response.data
           }, 'user.created.amount', 'group-default');
         } catch (error) {
